@@ -1,11 +1,14 @@
+from datetime import datetime, timedelta
 import sqlite3
 from sqlite3 import Error
 import sys
 
 
-def show_chart_plotly(ids):
+def show_chart_plotly(ids, days):
     import plotly.express as px
     import pandas as pd
+
+    date = datetime.now() - timedelta(days=days)
 
     excel = {}
     for i in ids:
@@ -22,12 +25,14 @@ def show_chart_plotly(ids):
             if 'Uptime' not in excel:
                 excel['Uptime'] = {}
             excel['Id'][i] = i
-            excel['Name'][i] = result[0]
-            excel['Uptime'][i] = int(percent_by_monitor_id(i))
+            excel['Name'][i] = str(result[0])
+            excel['Uptime'][i] = int(percent_by_monitor_id(i, date))
 
     data = pd.DataFrame.from_dict(excel)
-    fig = px.bar(data, x='Id', y='Uptime', hover_data=['Name'])
+    fig = px.bar(data, x='Name', y='Uptime', hover_data=['Name'])
     fig.show()
+
+    return data
 
 
 def show_chart_matplotlib(ids):
@@ -76,17 +81,17 @@ def create_connection(kumadb):
     return conn
 
 
-def count_heartbeat_by_status(monitor_id, status):
+def count_heartbeat_by_status(monitor_id, status, date):
     cur = conn.cursor()
-    cur.execute("SELECT count(*) FROM heartbeat WHERE monitor_id=? AND status=?", (monitor_id, status))
+    cur.execute("SELECT count(*) FROM heartbeat WHERE monitor_id=? AND status=? AND time>?", (monitor_id, status, date))
     result = cur.fetchone()
 
     return result[0]
 
 
-def percent_by_monitor_id(monitor_id):
-    rows = count_heartbeat_by_monitor_id(monitor_id)
-    result = count_heartbeat_by_status(monitor_id, 1)
+def percent_by_monitor_id(monitor_id, date):
+    rows = count_heartbeat_by_monitor_id(monitor_id, date)
+    result = count_heartbeat_by_status(monitor_id, 1, date)
 
     if rows == 0:
         return 0
@@ -95,7 +100,7 @@ def percent_by_monitor_id(monitor_id):
     return percentage
 
 
-def count_heartbeat_by_monitor_id(monitor_id):
+def count_heartbeat_by_monitor_id(monitor_id, date):
     """
     Query tasks by priority
     :param conn: the Connection object
@@ -103,7 +108,7 @@ def count_heartbeat_by_monitor_id(monitor_id):
     :return:
     """
     cur = conn.cursor()
-    cur.execute("SELECT count(*) FROM heartbeat WHERE monitor_id=?", (monitor_id,))
+    cur.execute("SELECT count(*) FROM heartbeat WHERE monitor_id=? AND time>?", (monitor_id, date))
 
     rows = cur.fetchone()
 
@@ -122,7 +127,14 @@ def main(args):
     # create a database connection
     conn = create_connection(DATABASE)
     with conn:
-        show_chart_plotly([1, 3, 10]) # list of IDs of monitors to report
+        ids = [35, 77, 78, 80, 81, 83, 84, 85, 39, 108, 7, 102, 103, 89, 94, 95, 131, 130, 132, 100, 75, 2, 87, 92] # list of IDs of monitors to report
+        days = 30 # days to report
+        data = show_chart_plotly(ids, days)
+
+        uptime_sum = 0
+        for i in data['Uptime'].index:
+            uptime_sum += data['Uptime'][i]
+        print(uptime_sum / len(ids))
 
         
 if __name__ == '__main__':
