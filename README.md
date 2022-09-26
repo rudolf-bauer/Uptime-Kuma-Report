@@ -10,7 +10,7 @@ pip install -r requirements.txt
 ## Use
 Simply run this command: (report of 30 days)
 ```bash
-python -m kumareport -db kuma.db -d 30
+python -m kumareport --db kuma.db -d 30
 ```
 Wait until the report get generated and a browser window pops up.
 
