@@ -18,7 +18,7 @@ def show_chart_plotly(days, tagname=None):
     else:
         cur.execute('SELECT monitor.id, monitor.name from monitor JOIN monitor_tag on (monitor.id = monitor_tag.monitor_id) JOIN tag on (tag.id = monitor_tag.tag_id) where tag.name = ? and monitor.active = 1', (tagname, ))
     result = cur.fetchall()
-    
+
     for i in result:
         mon_id = i[0]
         mon_name = i[1]
