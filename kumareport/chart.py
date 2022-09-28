@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 from typing import Optional
 
-from kumareport.database import Database
+from .database import Database
 
 
 def chart_plotly(

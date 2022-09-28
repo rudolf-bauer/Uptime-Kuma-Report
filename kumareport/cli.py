@@ -3,8 +3,8 @@ import sys
 
 from datetime import datetime, timedelta
 
-from kumareport.database import Database
-from kumareport.chart import chart_plotly
+from .database import Database
+from .chart import chart_plotly
 
 
 @click.command(help="""
