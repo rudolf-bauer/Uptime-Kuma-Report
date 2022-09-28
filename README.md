@@ -28,6 +28,7 @@ Usage: python -m kumareport [OPTIONS]
   instead.
 
 Options:
+  -c, --caption TEXT  Optional chart title
   -t, --tag TEXT      Tagname of the monitors to include in the report
   --db FILENAME       Uptime Kuma database path.  [required]
   -d, --days INTEGER  Number of days to report.  [required]

@@ -2,11 +2,12 @@ import plotly.express as px
 import pandas as pd
 
 from datetime import datetime, timedelta
+from typing import Optional
 
 from kumareport.database import Database
 
 
-def chart_plotly(days, tagname=None):
+def chart_plotly(days, tagname=None, caption: Optional[str]=None):
     """Returns a plotly chart for the given number of days."""
     date = datetime.now() - timedelta(days=days)
 
@@ -38,4 +39,4 @@ def chart_plotly(days, tagname=None):
             excel['Uptime'][i] = int(db.percent_by_monitor_id(mon_id, date))
 
     data = pd.DataFrame.from_dict(excel)
-    return px.bar(data, x='Name', y='Uptime', hover_data=['Name'])
+    return px.bar(data, x='Name', y='Uptime', hover_data=['Name'], title=caption)
