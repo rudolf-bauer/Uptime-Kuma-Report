@@ -1,7 +1,7 @@
 import click
 
 from kumareport.database import Database
-from kumareport.chart import show_chart_plotly
+from kumareport.chart import chart_plotly
 
 
 @click.command
@@ -11,4 +11,5 @@ from kumareport.chart import show_chart_plotly
 def cli(db, days, tag):
     Database(db.name)
 
-    show_chart_plotly(days, tag)
+    chart = chart_plotly(days, tag)
+    chart.show()

@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 from kumareport.database import Database
 
 
-def show_chart_plotly(days, tagname=None):
+def chart_plotly(days, tagname=None):
+    """Returns a plotly chart for the given number of days."""
     date = datetime.now() - timedelta(days=days)
 
     db = Database.db
@@ -37,5 +38,4 @@ def show_chart_plotly(days, tagname=None):
             excel['Uptime'][i] = int(db.percent_by_monitor_id(mon_id, date))
 
     data = pd.DataFrame.from_dict(excel)
-    fig = px.bar(data, x='Name', y='Uptime', hover_data=['Name'])
-    fig.show()
+    return px.bar(data, x='Name', y='Uptime', hover_data=['Name'])
