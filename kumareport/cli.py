@@ -1,6 +1,8 @@
 import click
 import sys
 
+from datetime import datetime, timedelta
+
 from kumareport.database import Database
 from kumareport.chart import chart_plotly
 
@@ -16,7 +18,10 @@ Redirect stdout to a file to create a standalone HTML file instead.
 def cli(db, days, tag, caption: str):
     Database(db.name)
 
-    chart = chart_plotly(days, tag, caption)
+    end = datetime.now()
+    start = (end - timedelta(days=days))
+
+    chart = chart_plotly(start, end, tag, caption)
     if sys.stdout.isatty():
         chart.show()
     else:
