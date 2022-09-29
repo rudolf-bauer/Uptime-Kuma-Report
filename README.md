@@ -3,7 +3,6 @@
 ## Install
 Simply clone and install requirements:
 ```bash
-git clone https://github.com/MrT3acher/Uptime-Kuma-Report/
 pip install -r requirements.txt
 ```
 
